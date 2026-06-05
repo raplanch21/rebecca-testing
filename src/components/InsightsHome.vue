@@ -574,6 +574,14 @@ const props = defineProps({
 const emit = defineEmits(['open-global-agent-mode', 'close-global-agent-mode'])
 
 const handleOpenAgentMode = (data) => {
+  if (typeof pendo !== 'undefined') {
+    pendo.track('agent_mode_opened_from_insight', {
+      insightTitle: data?.title || '',
+      insightContext: data?.context ? String(data.context).substring(0, 100) : '',
+      sourceTab: activeTab.value
+    })
+  }
+
   emit('open-global-agent-mode', data)
 }
 
