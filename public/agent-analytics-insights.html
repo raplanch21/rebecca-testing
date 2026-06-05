@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agent Analytics Insights</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      background: #F8F8F8;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    .hero {
+      margin-bottom: 32px;
+    }
+
+    .hero h1 {
+      font-size: 24px;
+      font-weight: 600;
+      color: #2C2C2C;
+      margin: 0 0 12px 0;
+    }
+
+    .hero p {
+      font-size: 14px;
+      color: #5A5A5A;
+      line-height: 1.5;
+      max-width: 720px;
+      margin: 0 0 16px 0;
+    }
+
+    .date-badge {
+      display: inline-flex;
+      padding: 6px 12px;
+      background-color: #F8F8F8;
+      border: 1px solid #E0E0E0;
+      border-radius: 4px;
+      font-size: 13px;
+      color: #2C2C2C;
+    }
+
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    .metric-card {
+      background: #FFFFFF;
+      border: 1px solid #E0E0E0;
+      border-radius: 8px;
+      padding: 16px;
+    }
+
+    .metric-card__title {
+      font-size: 13px;
+      color: #5A5A5A;
+      margin-bottom: 8px;
+    }
+
+    .metric-card__value-row {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .metric-card__value {
+      font-size: 24px;
+      font-weight: 600;
+      color: #2C2C2C;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .badge--success {
+      background-color: rgba(0, 184, 124, 0.1);
+      color: #00B87C;
+    }
+
+    .metric-card__description {
+      font-size: 12px;
+      color: #5A5A5A;
+      line-height: 1.5;
+    }
+
+    .section {
+      background: #FFFFFF;
+      border: 1px solid #E0E0E0;
+      border-radius: 8px;
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+
+    .section__header {
+      padding: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .section__header:hover {
+      background: #FAFAFA;
+    }
+
+    .section__title-group h2 {
+      font-size: 16px;
+      font-weight: 600;
+      color: #2C2C2C;
+      margin: 0 0 4px 0;
+    }
+
+    .section__title-group p {
+      font-size: 13px;
+      color: #5A5A5A;
+      margin: 0;
+    }
+
+    .section__chevron {
+      width: 20px;
+      height: 20px;
+      transition: transform 0.2s;
+    }
+
+    .section__chevron--open {
+      transform: rotate(180deg);
+    }
+
+    .section__content {
+      padding: 0 16px 16px;
+      border-top: 1px solid #E0E0E0;
+      display: none;
+    }
+
+    .section__content--open {
+      display: block;
+    }
+
+    .chart-section {
+      padding-top: 16px;
+    }
+
+    .chart-header {
+      margin-bottom: 16px;
+    }
+
+    .chart-header h3 {
+      font-size: 14px;
+      font-weight: 600;
+      color: #2C2C2C;
+      margin: 0 0 4px 0;
+    }
+
+    .chart-header p {
+      font-size: 12px;
+      color: #5A5A5A;
+      margin: 0;
+    }
+
+    .chart-container {
+      background: #F8F8F8;
+      border: 1px solid #E0E0E0;
+      border-radius: 8px;
+      padding: 16px;
+    }
+
+    .chart-bar {
+      margin-bottom: 16px;
+    }
+
+    .chart-bar:last-child {
+      margin-bottom: 0;
+    }
+
+    .chart-bar__header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 4px;
+    }
+
+    .chart-bar__name {
+      font-size: 13px;
+      font-weight: 600;
+      color: #2C2C2C;
+    }
+
+    .chart-bar__value {
+      font-size: 13px;
+      font-weight: 600;
+      color: #2C2C2C;
+    }
+
+    .chart-bar__track {
+      width: 100%;
+      height: 8px;
+      background: #FFFFFF;
+      border-radius: 4px;
+      overflow: hidden;
+      margin-bottom: 4px;
+    }
+
+    .chart-bar__fill {
+      height: 100%;
+      transition: width 0.3s ease;
+    }
+
+    .chart-bar__meta {
+      font-size: 12px;
+      color: #5A5A5A;
+    }
+
+    .chart-description {
+      font-size: 13px;
+      color: #5A5A5A;
+      line-height: 1.5;
+      margin-top: 12px;
+    }
+
+    .insight-frame {
+      background: #F8F8F8;
+      border: 2px solid #4570E0;
+      border-radius: 8px;
+      padding: 16px;
+      margin-top: 16px;
+    }
+
+    .insight-frame h4 {
+      font-size: 14px;
+      font-weight: 600;
+      color: #2C2C2C;
+      margin: 0 0 8px 0;
+    }
+
+    .insight-frame p {
+      font-size: 14px;
+      color: #5A5A5A;
+      line-height: 1.5;
+      margin: 0;
+    }
+
+    .insights-list {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      padding-top: 16px;
+    }
+
+    .insight-item {
+      padding-bottom: 24px;
+      border-bottom: 1px solid #E0E0E0;
+    }
+
+    .insight-item:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .insight-item h4 {
+      font-size: 14px;
+      font-weight: 600;
+      color: #2C2C2C;
+      margin: 0 0 8px 0;
+    }
+
+    .insight-item p {
+      font-size: 14px;
+      color: #5A5A5A;
+      line-height: 1.5;
+      margin: 0;
+    }
+
+    .event-tag {
+      font-family: 'Monaco', 'Menlo', 'Courier New', monospace;
+      font-size: 12px;
+      padding: 2px 4px;
+      background: #F8F8F8;
+      border-radius: 3px;
+    }
+
+    .feedback-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+      padding-top: 16px;
+    }
+
+    .feedback-card {
+      background: #F8F8F8;
+      border: 1px solid #E0E0E0;
+      border-radius: 8px;
+      padding: 16px;
+    }
+
+    .feedback-card__header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .feedback-card__icon {
+      width: 16px;
+      height: 16px;
+    }
+
+    .feedback-card h4 {
+      font-size: 14px;
+      font-weight: 600;
+      color: #2C2C2C;
+      margin: 0;
+    }
+
+    .feedback-card p {
+      font-size: 13px;
+      color: #5A5A5A;
+      line-height: 1.5;
+      margin: 0;
+    }
+
+    .recommendations-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      padding-top: 16px;
+    }
+
+    .recommendation-card {
+      background: #F8F8F8;
+      border: 1px solid #E0E0E0;
+      border-radius: 8px;
+      padding: 16px;
+    }
+
+    .recommendation-card h4 {
+      font-size: 14.222px;
+      font-weight: 600;
+      color: #2C2C2C;
+      margin: 0 0 8px 0;
+    }
+
+    .recommendation-card p {
+      font-size: 14.222px;
+      color: #2C2C2C;
+      line-height: 1.5;
+      margin: 0;
+    }
+
+    .supporting-data {
+      padding-top: 16px;
+    }
+
+    .data-box {
+      background: #FFFFFF;
+      border: 1px solid #E0E0E0;
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 24px;
+    }
+
+    .data-box:last-child {
+      margin-bottom: 0;
+    }
+
+    .data-box h3 {
+      font-size: 14px;
+      font-weight: 600;
+      color: #2C2C2C;
+      margin: 0 0 16px 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .data-box ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .data-box li {
+      margin-bottom: 8px;
+    }
+
+    .data-box li:last-child {
+      margin-bottom: 0;
+    }
+
+    .data-box a {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      text-decoration: none;
+      color: #4570E0;
+      font-size: 14px;
+      font-weight: 600;
+      transition: all 0.2s ease;
+    }
+
+    .data-box a:hover {
+      color: #2C5AB0;
+    }
+
+    .icon {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+    }
+
+    .icon-arrow {
+      width: 14px;
+      height: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Hero Section -->
+    <div class="hero">
+      <h1>Agent Analytics - Product performance dashboard</h1>
+      <p>Agent Analytics shows strong adoption with 18,347 page events from 2,262 unique accounts in the last 30 days. The Conversations Tab and Use Cases Tab are seeing healthy engagement (1,456 and 1,725 events respectively), though critical feedback reveals significant opportunities to improve data collection reliability, use case clustering accuracy, and conversation management tools.</p>
+      <div class="date-badge">Jan 18 – Feb 17, 2026</div>
+    </div>
+
+    <!-- Metrics Grid -->
+    <div class="metrics-grid">
+      <div class="metric-card">
+        <div class="metric-card__title">Total page events</div>
+        <div class="metric-card__value-row">
+          <div class="metric-card__value">18,347</div>
+          <span class="badge badge--success">+35%</span>
+        </div>
+        <div class="metric-card__description">Events across all Agent Analytics pages, showing strong and growing adoption</div>
+      </div>
+
+      <div class="metric-card">
+        <div class="metric-card__title">Unique accounts</div>
+        <div class="metric-card__value-row">
+          <div class="metric-card__value">2,262</div>
+          <span class="badge badge--success">+28%</span>
+        </div>
+        <div class="metric-card__description">Accounts actively using Agent Analytics in the last 30 days</div>
+      </div>
+
+      <div class="metric-card">
+        <div class="metric-card__title">Feature engagement</div>
+        <div class="metric-card__value-row">
+          <div class="metric-card__value">6,911</div>
+          <span class="badge badge--success">+22%</span>
+        </div>
+        <div class="metric-card__description">Combined events across <span class="event-tag">Conversations Tab</span>, <span class="event-tag">Use Cases Tab</span>, and other key features</div>
+      </div>
+
+      <div class="metric-card">
+        <div class="metric-card__title">Agent setup activity</div>
+        <div class="metric-card__value-row">
+          <div class="metric-card__value">221</div>
+          <span class="badge badge--success">+18%</span>
+        </div>
+        <div class="metric-card__description">AI agent setup events, indicating growing interest in deploying conversational agents</div>
+      </div>
+    </div>
+
+    <!-- Key Insights Section -->
+    <div class="section">
+      <div class="section__header" onclick="toggleSection('insights')">
+        <div class="section__title-group">
+          <h2>Key insights</h2>
+          <p>Critical findings from agent analytics data</p>
+        </div>
+        <svg class="section__chevron" id="insights-chevron" viewBox="0 0 24 24" fill="none" stroke="#5A5A5A" stroke-width="2">
+          <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+      </div>
+      <div class="section__content section__content--open" id="insights-content">
+        <div class="chart-section">
+          <div class="chart-header">
+            <h3>Feature usage breakdown</h3>
+            <p>Top 5 agent analytics features by event volume (last 30 days)</p>
+          </div>
+
+          <div class="chart-container">
+            <div class="chart-bar">
+              <div class="chart-bar__header">
+                <span class="chart-bar__name">Use Cases Tab</span>
+                <span class="chart-bar__value">1,725 events</span>
+              </div>
+              <div class="chart-bar__track">
+                <div class="chart-bar__fill" style="width: 100%; background-color: #4570E0;"></div>
+              </div>
+              <div class="chart-bar__meta">172 accounts • 377 visitors</div>
+            </div>
+
+            <div class="chart-bar">
+              <div class="chart-bar__header">
+                <span class="chart-bar__name">Clickable Table Cells</span>
+                <span class="chart-bar__value">1,691 events</span>
+              </div>
+              <div class="chart-bar__track">
+                <div class="chart-bar__fill" style="width: 98%; background-color: #128297;"></div>
+              </div>
+              <div class="chart-bar__meta">99 accounts • 206 visitors</div>
+            </div>
+
+            <div class="chart-bar">
+              <div class="chart-bar__header">
+                <span class="chart-bar__name">Conversations Tab</span>
+                <span class="chart-bar__value">1,456 events</span>
+              </div>
+              <div class="chart-bar__track">
+                <div class="chart-bar__fill" style="width: 84%; background-color: #00B87C;"></div>
+              </div>
+              <div class="chart-bar__meta">86 accounts • 259 visitors</div>
+            </div>
+
+            <div class="chart-bar">
+              <div class="chart-bar__header">
+                <span class="chart-bar__name">Add an Agent</span>
+                <span class="chart-bar__value">1,152 events</span>
+              </div>
+              <div class="chart-bar__track">
+                <div class="chart-bar__fill" style="width: 67%; background-color: #DD4600;"></div>
+              </div>
+              <div class="chart-bar__meta">531 accounts • 649 visitors</div>
+            </div>
+
+            <div class="chart-bar">
+              <div class="chart-bar__header">
+                <span class="chart-bar__name">Agent Settings</span>
+                <span class="chart-bar__value">735 events</span>
+              </div>
+              <div class="chart-bar__track">
+                <div class="chart-bar__fill" style="width: 43%; background-color: #791e77;"></div>
+              </div>
+              <div class="chart-bar__meta">135 accounts • 206 visitors</div>
+            </div>
+
+            <p class="chart-description">Use Cases Tab leads with 1,725 events, followed closely by Clickable Table Cells (1,691) and Conversations Tab (1,456). Add an Agent shows the broadest reach with 649 unique visitors, while Conversations Tab has the highest visitor-to-account ratio (3:1), suggesting individual users are exploring conversations multiple times.</p>
+          </div>
+
+          <div class="insight-frame">
+            <h4>Conversation activation remains low despite high setup interest</h4>
+            <p>While 1,152 events show users adding agents and 735 events show settings access, only 16 events for "Activate Conversations" suggests a significant drop-off. This 1.4% activation rate indicates either setup complexity, lack of awareness about conversation capture benefits, or concerns about collecting sensitive data.</p>
+          </div>
+        </div>
+
+        <div class="insights-list">
+          <div class="insight-item">
+            <h4>Use Cases Tab leads feature engagement with 1,725 events from 172 accounts</h4>
+            <p>The <span class="event-tag">Use Cases Tab</span> shows the highest feature-level engagement, indicating customers are actively leveraging tracked use cases to understand AI agent interactions. However, feedback reveals customers find the grouping "random and not very helpful," suggesting the AI-powered clustering needs accuracy improvements.</p>
+          </div>
+
+          <div class="insight-item">
+            <h4>Conversations Tab engagement shows 1,456 events but faces UX challenges</h4>
+            <p>The <span class="event-tag">Conversations Tab</span> has 1,456 events from 86 accounts, but customers report significant challenges with multi-turn conversation monitoring. Users explicitly request better tools to annotate, export, and share conversations with their teams, particularly for communicating findings to engineers who lack Pendo access.</p>
+          </div>
+
+          <div class="insight-item">
+            <h4>Add an Agent feature has broadest reach with 649 unique visitors but data collection failures are blocking adoption</h4>
+            <p>The <span class="event-tag">Add an Agent</span> shows the widest reach (649 visitors from 531 accounts), indicating strong interest in agent analytics setup. However, multiple customers report critical data collection failures: "data is not collected despite multiple attempts to tag the agent" and "agent analytics show no activity since mid-December, but this is not the case."</p>
+          </div>
+
+          <div class="insight-item">
+            <h4>Low Activate Conversations adoption (16 events from 11 accounts) suggests barriers to full conversation capture</h4>
+            <p>Only 16 events for <span class="event-tag">Activate Conversations</span> from 11 accounts, compared to 735 events for Agent Settings, suggests most customers remain in prompts-only mode. This could indicate setup complexity, lack of awareness, or concerns about sensitive data collection.</p>
+          </div>
+
+          <div class="insight-item">
+            <h4>Save Report feature shows minimal usage (67 events from 28 accounts)</h4>
+            <p>The <span class="event-tag">Save a Report</span> has only 67 events from 28 accounts, suggesting reports either meet immediate needs without saving, or lack features that would make them worth saving for ongoing monitoring.</p>
+          </div>
+
+          <div class="insight-item">
+            <h4>Agent Analytics API access is a critical unmet need for data warehouse integration</h4>
+            <p>Customers explicitly request "Add Agent Analytics metrics into the Pendo API please" to enable merging AI agent analytics with external data warehouses. This is described as urgent and will "determine whether or not they renew" as they currently supplement Pendo with tools like DataDog for this functionality.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Feedback Themes Section -->
+    <div class="section">
+      <div class="section__header" onclick="toggleSection('feedback')">
+        <div class="section__title-group">
+          <h2>Feedback themes</h2>
+          <p>Common pain points from customer feedback</p>
+        </div>
+        <svg class="section__chevron" id="feedback-chevron" viewBox="0 0 24 24" fill="none" stroke="#5A5A5A" stroke-width="2">
+          <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+      </div>
+      <div class="section__content" id="feedback-content">
+        <div class="feedback-grid">
+          <div class="feedback-card">
+            <div class="feedback-card__header">
+              <svg class="feedback-card__icon" viewBox="0 0 24 24" fill="none" stroke="#8E0B00" stroke-width="2">
+                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                <line x1="12" y1="9" x2="12" y2="13"></line>
+                <line x1="12" y1="17" x2="12.01" y2="17"></line>
+              </svg>
+              <h4>Data collection reliability failures</h4>
+            </div>
+            <p>Multiple customers report "data is not collected, tried several times to tag the agent" and "agent analytics show no activity since mid-December, but this is not the case." This critical issue is blocking adoption and causing data discrepancies, including inaccurate conversation counts due to conversation IDs not changing between sessions.</p>
+          </div>
+
+          <div class="feedback-card">
+            <div class="feedback-card__header">
+              <svg class="feedback-card__icon" viewBox="0 0 24 24" fill="none" stroke="#DD4600" stroke-width="2">
+                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+              </svg>
+              <h4>Use case grouping accuracy issues</h4>
+            </div>
+            <p>Customers find the AI-powered use case clustering "random and not very helpful," requesting more granular and accurate categorization of prompts. The current grouping doesn't accurately reflect actual conversation topics, reducing the value of the Use Cases Tab despite its high engagement (1,725 events).</p>
+          </div>
+
+          <div class="feedback-card">
+            <div class="feedback-card__header">
+              <svg class="feedback-card__icon" viewBox="0 0 24 24" fill="none" stroke="#DD4600" stroke-width="2">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+              </svg>
+              <h4>Conversation management and collaboration gaps</h4>
+            </div>
+            <p>Users struggle with multi-turn conversation monitoring and explicitly request tools to annotate, highlight, export, and share conversations with team members. Current tools don't provide good UX for monitoring conversations, and customers need to communicate findings to engineers who lack Pendo access.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recommendations Section -->
+    <div class="section">
+      <div class="section__header" onclick="toggleSection('recommendations')">
+        <div class="section__title-group">
+          <h2>What we suggest</h2>
+          <p>Recommended actions based on insights</p>
+        </div>
+        <svg class="section__chevron" id="recommendations-chevron" viewBox="0 0 24 24" fill="none" stroke="#5A5A5A" stroke-width="2">
+          <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+      </div>
+      <div class="section__content" id="recommendations-content">
+        <div class="recommendations-list">
+          <div class="recommendation-card">
+            <h4>Fix data collection reliability and implement proactive monitoring</h4>
+            <p>Address the critical "data not collected" issue blocking multiple customers. Implement better error messaging during agent setup, add validation checks to detect collection failures early, and provide proactive monitoring alerts when data stops flowing. This is the highest priority issue impacting customer trust and adoption.</p>
+          </div>
+
+          <div class="recommendation-card">
+            <h4>Improve use case clustering accuracy and allow manual customization</h4>
+            <p>Enhance the AI-powered use case grouping algorithm to provide more meaningful, accurate categorization of prompts. Consider allowing customers to manually adjust or create custom use case categories, and provide transparency into how prompts are being grouped so users can understand and trust the clustering.</p>
+          </div>
+
+          <div class="recommendation-card">
+            <h4>Build conversation management and collaboration tools</h4>
+            <p>Add annotation, highlighting, and export capabilities for conversations. Enable team collaboration by allowing users to share specific conversations with context notes, improve the multi-turn conversation viewing experience, and provide better tools for communicating findings to stakeholders who don't have direct Pendo access.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Supporting Data Section -->
+    <div class="section">
+      <div class="section__header" onclick="toggleSection('supporting')">
+        <div class="section__title-group">
+          <h2>Supporting data</h2>
+          <p>Session replays and feedback showing user friction</p>
+        </div>
+        <svg class="section__chevron" id="supporting-chevron" viewBox="0 0 24 24" fill="none" stroke="#5A5A5A" stroke-width="2">
+          <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+      </div>
+      <div class="section__content" id="supporting-content">
+        <div class="supporting-data">
+          <div class="data-box">
+            <h3>
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="#4570E0" stroke-width="2">
+                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+              </svg>
+              Target Events in Pendo
+            </h3>
+            <ul>
+              <li><a href="https://app.pendo.io/s/5668600916475904/features/6uTCXRKFhqYka_gTaHv5zytCMkA" target="_blank">• View Conversations Tab in Pendo <svg class="icon-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></a></li>
+              <li><a href="https://app.pendo.io/s/5668600916475904/features/kt-CzqT42bo8zws_6oh5fjLNyXg" target="_blank">• View Use Cases Tab in Pendo <svg class="icon-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></a></li>
+              <li><a href="https://app.pendo.io/s/5668600916475904/pages/1_wmJXcPuVS7xZZkXxIHhtGhYEc" target="_blank">• View Agent Analytics List Page in Pendo <svg class="icon-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></a></li>
+              <li><a href="https://app.pendo.io/s/5668600916475904/pages/8W91uPVtQnFONEjOpHtXQziS6k4" target="_blank">• View Analyze Report Page in Pendo <svg class="icon-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></a></li>
+              <li><a href="https://app.pendo.io/s/5668600916475904/features/4oOXT6-vtWW-gB6s5jmnVmrlLuw" target="_blank">• View Add an Agent in Pendo <svg class="icon-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></a></li>
+            </ul>
+          </div>
+
+          <div class="data-box">
+            <h3>
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="#4570E0" stroke-width="2">
+                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+              </svg>
+              Session replays with frustration
+            </h3>
+            <ul>
+              <li><a href="https://app.pendo.io/s/5668600916475904/replay/player/PZEH5NeLACLG3WOY" target="_blank">• pendo-internal - 3 rage clicks, 1 dead click (1m 28s) <svg class="icon-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></a></li>
+              <li><a href="https://app.pendo.io/s/5668600916475904/replay/player/95g9kkjXhcVxj0wH" target="_blank">• ServiceTrade - 1 rage click, 1 u-turn (1m 38s) <svg class="icon-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></a></li>
+              <li><a href="https://app.pendo.io/s/5668600916475904/replay/player/kx5IsfErKzVPYvzL" target="_blank">• LexisNexis_PS_Plus - 1 u-turn (2m 40s) <svg class="icon-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></a></li>
+              <li><a href="https://app.pendo.io/s/5668600916475904/replay/player/tB2vUygsc8c91jYZ" target="_blank">• ChannelAdvisor_Corporati - 1 dead click (1m 13s) <svg class="icon-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></a></li>
+              <li><a href="https://app.pendo.io/s/5668600916475904/replay/player/7yXqDHUlGLGhcvq0" target="_blank">• Curriculum_Associates - 1 dead click (1m 13s) <svg class="icon-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></a></li>
+              <li><a href="https://app.pendo.io/s/5668600916475904/replay/player/YKyqM2K4hpvkaWmx" target="_blank">• Palo_Alto_Networks2 - 1 dead click (3m 17s) <svg class="icon-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></a></li>
+              <li><a href="https://app.pendo.io/s/5668600916475904/replay/player/jYTemjf7WM6IegMz" target="_blank">• BillSpring - 1 rage click (3m 20s) <svg class="icon-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></a></li>
+            </ul>
+          </div>
+
+          <div class="data-box">
+            <h3>
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="#4570E0" stroke-width="2">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+              </svg>
+              Feedback items
+            </h3>
+            <ul>
+              <li><a href="https://app.pendo.io/s/5668600916475904/listen/feedback" target="_blank">• Difficulty setting up agent analytics - Data not collected despite multiple tagging attempts <svg class="icon-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></a></li>
+              <li><a href="https://app.pendo.io/s/5668600916475904/listen/feedback" target="_blank">• Agent analytics data discrepancy - Shows no activity since mid-December but data exists <svg class="icon-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></a></li>
+              <li><a href="https://app.pendo.io/s/5668600916475904/listen/feedback" target="_blank">• Use case grouping seems random - Need more granular categorization <svg class="icon-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></a></li>
+              <li><a href="https://app.pendo.io/s/5668600916475904/listen/feedback" target="_blank">• Need to annotate conversations - Want to highlight and share with team <svg class="icon-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></a></li>
+              <li><a href="https://app.pendo.io/s/5668600916475904/listen/feedback" target="_blank">• Add Agent Analytics to Pendo API - Critical for data warehouse integration <svg class="icon-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></a></li>
+              <li><a href="https://app.pendo.io/s/5668600916475904/listen/feedback" target="_blank">• Inaccurate conversation count - Conversation IDs not changing properly <svg class="icon-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></a></li>
+              <li><a href="https://app.pendo.io/s/5668600916475904/listen/feedback" target="_blank">• Separate roles for agent analytics - Manage agents vs view raw data permissions <svg class="icon-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function toggleSection(sectionId) {
+      const content = document.getElementById(sectionId + '-content');
+      const chevron = document.getElementById(sectionId + '-chevron');
+      
+      if (content.classList.contains('section__content--open')) {
+        content.classList.remove('section__content--open');
+        chevron.classList.remove('section__chevron--open');
+      } else {
+        content.classList.add('section__content--open');
+        chevron.classList.add('section__chevron--open');
+      }
+    }
+
+    // Open Key Insights by default
+    document.addEventListener('DOMContentLoaded', function() {
+      document.getElementById('insights-chevron').classList.add('section__chevron--open');
+    });
+  </script>
+</body>
+</html>

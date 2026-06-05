@@ -1,0 +1,224 @@
+INSIGHTS HOMEPAGE EXPORT PACKAGE
+================================
+
+📦 Package Created: February 5, 2026
+🎯 Purpose: Portable homepage components for Insights feature
+🚫 Excludes: Navigation components (left sidebar, top header)
+
+FILE STRUCTURE
+--------------
+
+insights-homepage-export/
+│
+├── 📄 README.md                          - Complete documentation
+├── 📄 INTEGRATION_GUIDE.md               - Step-by-step integration instructions
+├── 📄 PACKAGE_CONTENTS.txt               - This file
+├── 📄 App.vue                            - Application root component
+│
+├── 📁 views/
+│   └── InsightsHome.vue                  - Main page component (1,259 lines)
+│       - 4 layout variants (default, hidden-summary, grouped, menu)
+│       - Sample data for all insight types
+│       - Highlight cards with feedback buttons
+│       - Responsive grid layouts
+│
+├── 📁 components/
+│   ├── InsightCard.vue                   - Standard insight card (743 lines)
+│   │   - Primary & secondary metrics
+│   │   - Expandable summaries
+│   │   - Multiple CTA variants
+│   │   - Dropdown menu support
+│   │
+│   ├── GroupedInsightCard.vue            - Multi-item card (334 lines)
+│   │   - Stacked items in single card
+│   │   - Shared insight summary
+│   │   - Agent mode integration
+│   │
+│   ├── AgentModeModal.vue                - AI chat interface (1,170 lines)
+│   │   - Draggable modal with snap
+│   │   - Context-aware responses
+│   │   - Suggested actions
+│   │   - Loading states
+│   │   - Pin/maximize controls
+│   │
+│   ├── 📁 agent/
+│   │   └── AccountRetentionResponse.vue  - Structured AI response (414 lines)
+│   │       - Formatted data tables
+│   │       - Friction pattern analysis
+│   │       - Account recommendations
+│   │       - Action links
+│   │
+│   └── 📁 pendo/                         - Design system components
+│       ├── PendoButton.vue               - Button component (359 lines)
+│       │   - 5 variants (primary, secondary, tertiary, tertiary-link, destructive)
+│       │   - 3 sizes (mini, small, regular)
+│       │   - Loading states
+│       │   - Icon support
+│       │
+│       ├── PendoIcon.vue                 - Icon component (172 lines)
+│       │   - Lucide icon integration
+│       │   - 50+ icons mapped
+│       │   - Configurable size/stroke
+│       │
+│       ├── PendoAppTag.vue               - App/feature tag (60 lines)
+│       │   - Monospace font
+│       │   - Icon + label
+│       │   - Compact design
+│       │
+│       ├── PendoFilterTag.vue            - Filter pill tag (55 lines)
+│       │   - Rounded pill style
+│       │   - Optional icon
+│       │   - Clean, minimal design
+│       │
+│       └── PendoTrendTag.vue             - Trend indicator (77 lines)
+│           - Positive/negative states
+│           - Auto-formatted percentages
+│           - Color-coded (green/red)
+│
+└── 📁 assets/
+    └── index.css                         - Complete design system (722 lines)
+        - CSS variables for all colors
+        - 12-shade palettes (gray, teal, green, red, etc.)
+        - Typography system
+        - Spacing scale
+        - Shadow utilities
+        - Component styles
+        - Responsive utilities
+
+DEPENDENCIES
+------------
+
+Required NPM Packages:
+  ✓ vue: ^3.x
+  ✓ lucide-vue-next: ^0.x
+
+Required Fonts (loaded via Google Fonts):
+  ✓ Inter (weights: 400, 500, 600, 700)
+  ✓ Sora (weight: 600)
+  ✓ DM Mono (weights: 400, 500, 600)
+
+FEATURES INCLUDED
+-----------------
+
+✓ 4 Card Layout Variants
+  - Default: 2-column with floating chip
+  - Hidden Summary: 3-column with simple CTA
+  - Grouped: Multi-item cards
+  - Menu: Cards with dropdown actions
+
+✓ Interactive Elements
+  - Expandable summaries
+  - Trend indicators (+/- percentages)
+  - Secondary metrics sections
+  - "See all" expand/collapse
+  - Agent mode integration
+  - Feedback buttons (thumbs up/down)
+
+✓ Agent Mode Features
+  - Draggable modal interface
+  - Smart positioning with snap
+  - Context-aware AI responses
+  - Suggested action items
+  - Message history
+  - Loading animations
+  - Welcome screen
+
+✓ Responsive Design
+  - Desktop: 3-column or 2-column grids
+  - Tablet: 2-column layout
+  - Mobile: Single-column stacked
+  - Flexible card heights
+
+✓ Design System
+  - 100+ CSS color variables
+  - 8 complete color palettes
+  - Typography scale
+  - Spacing system (6 levels)
+  - Shadow utilities
+  - Status indicators
+  - Data visualization colors
+
+CUSTOMIZATION POINTS
+--------------------
+
+Easy to customize:
+  → Brand colors (change --teal-* variables)
+  → Typography (font families and sizes)
+  → Card layouts (grid columns)
+  → Border radius (--border-radius)
+  → Spacing (--spacing-* variables)
+  → Shadow depths (--shadow-* variables)
+
+WHAT'S NOT INCLUDED
+-------------------
+
+✗ Left sidebar navigation
+✗ Top header navigation  
+✗ Router configuration
+✗ State management (Vuex/Pinia)
+✗ API integration (sample data only)
+✗ Authentication/user management
+✗ Backend services
+
+INTEGRATION TIME ESTIMATE
+--------------------------
+
+⏱️ Basic Integration: 15-30 minutes
+  - Copy files
+  - Install dependencies
+  - Import CSS
+  - Add to router
+
+⏱️ Full Customization: 1-2 hours
+  - Connect to your API
+  - Customize colors/branding
+  - Adjust layouts
+  - Test responsiveness
+
+⏱️ Production Ready: 2-4 hours
+  - Replace all sample data
+  - Add error handling
+  - Implement loading states
+  - Cross-browser testing
+
+FILE SIZES
+----------
+
+Total Package: ~130 KB (uncompressed source)
+  - Vue Components: ~95 KB
+  - CSS: ~30 KB
+  - Documentation: ~15 KB
+
+Estimated Bundle Size (production): ~40-50 KB (gzipped)
+
+BROWSER SUPPORT
+---------------
+
+✓ Chrome/Edge (latest)
+✓ Firefox (latest)  
+✓ Safari (latest)
+✓ iOS Safari (latest)
+✓ Chrome Mobile (latest)
+
+NEXT STEPS
+----------
+
+1. Read README.md for overview
+2. Follow INTEGRATION_GUIDE.md for setup
+3. Copy files to your project
+4. Install dependencies (npm install lucide-vue-next)
+5. Import CSS globally
+6. Start using components!
+
+QUESTIONS?
+----------
+
+Check the README.md for:
+  - Component prop documentation
+  - Data format examples
+  - Customization guides
+  - Troubleshooting tips
+
+================================
+Ready to drop into any Vue 3 app!
+================================
