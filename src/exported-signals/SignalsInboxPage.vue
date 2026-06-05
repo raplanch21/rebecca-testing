@@ -4,6 +4,19 @@ import { inboxMainContentById, inboxSidebarCards } from './signalsData.js'
 
 const emit = defineEmits(['ask-leo'])
 
+function handleInboxAskLeo() {
+  if (typeof pendo !== 'undefined') {
+    pendo.track('signal_inbox_ask_leo_initiated', {
+      signalId: activeInboxContent.value?.id || activeInboxId.value,
+      signalTitle: activeInboxContent.value?.title || '',
+      signalTag: activeInboxContent.value?.tag || '',
+      signalTagTone: activeInboxContent.value?.tagTone || ''
+    })
+  }
+  emit('ask-leo', activeInboxContent.value)
+  inboxActionsOpen.value = false
+}
+
 const activeInboxId = ref('inbox-path')
 const inboxTakeawaysOpen = ref(false)
 const inboxActionsOpen = ref(false)
@@ -91,7 +104,7 @@ function barWidth(width) {
               </button>
               <div v-if="inboxActionsOpen" class="signals-inbox-header-menu">
                 <button class="signals-inbox-header-menu-item" @click="inboxActionsOpen = false">Watch replays</button>
-                <button class="signals-inbox-header-menu-item" @click="emit('ask-leo', activeInboxContent); inboxActionsOpen = false">Ask Leo</button>
+                <button class="signals-inbox-header-menu-item" @click="handleInboxAskLeo()">Ask Leo</button>
               </div>
             </div>
           </div>

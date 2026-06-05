@@ -211,6 +211,13 @@ const sendMessage = () => {
     })
   }
 
+  if (typeof pendo !== 'undefined') {
+    pendo.track('agent_message_sent', {
+      messageLength: inputMessage.value.length,
+      conversationMessageCount: messages.value.filter(m => m.type === 'user').length + 1
+    })
+  }
+
   messages.value.push({
     type: 'user',
     content: inputMessage.value,
@@ -499,8 +506,12 @@ const trackReaction = (message, reactionType) => {
 }
 
 const handleSuggestedAction = (action) => {
-  // Handle suggested action clicks
-  console.log('Action clicked:', action)
+  if (typeof pendo !== 'undefined') {
+    pendo.track('agent_suggested_action_clicked', {
+      actionLabel: action.label,
+      actionType: action.action
+    })
+  }
 
   if (typeof window !== 'undefined' && window.pendo) {
     window.pendo.trackAgent('prompt', {

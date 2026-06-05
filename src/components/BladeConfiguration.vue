@@ -621,7 +621,20 @@ const handleConfirm = async () => {
     // Show subscription card with ACTIVE status
     isSubscribed.value = true
     subscriptionStatus.value = 'active'
-    
+
+    if (typeof pendo !== 'undefined') {
+      pendo.track('blade_configuration_confirmed', {
+        dashboardName: props.dashboardName,
+        frequency: formData.value.frequency,
+        day: formData.value.day,
+        dayOfMonth: formData.value.dayOfMonth,
+        time: formData.value.time,
+        timezone: formData.value.timezone,
+        channelCount: formData.value.channels.length,
+        subscriptionStatus: 'active'
+      })
+    }
+
     // Emit save event if parent is listening
     emit('save', formData.value)
   } catch (error) {
