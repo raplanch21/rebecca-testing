@@ -6,6 +6,7 @@ import path from 'path'
 const componentsPath = path.resolve(__dirname, '../components/src')
 
 export default defineConfig({
+  base: './',
   plugins: [vue(), react()],
   resolve: {
     alias: {
