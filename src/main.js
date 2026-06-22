@@ -7,13 +7,6 @@ import HighchartsVue from 'highcharts-vue'
 const app = createApp(App)
 app.use(router)
 app.use(HighchartsVue)
-
-pendo.initialize({
-  visitor: {
-    id: ''
-  }
-});
-
 app.mount('#app')
 
 
