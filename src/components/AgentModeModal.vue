@@ -216,7 +216,7 @@ const sendMessage = () => {
   
   if (window.pendo) {
     window.pendo.trackAgent("prompt", {
-      agentId: "8mDvSyad5jGchEMpHJP6TJ1KWpg",
+      agentId: "_3TEU5SdvhA2l5qeuAgZpYbqG4s",
       conversationId: conversationId.value,
       messageId,
       content,
@@ -346,7 +346,7 @@ watch(() => props.isOpen, (isOpen) => {
         
         if (window.pendo) {
           window.pendo.trackAgent("agent_response", {
-            agentId: "8mDvSyad5jGchEMpHJP6TJ1KWpg",
+            agentId: "_3TEU5SdvhA2l5qeuAgZpYbqG4s",
             conversationId: conversationId.value,
             messageId: responseMessageId,
             content: response.content || ''
@@ -493,7 +493,7 @@ const handleSuggestedAction = (action) => {
   
   if (window.pendo) {
     window.pendo.trackAgent("prompt", {
-      agentId: "8mDvSyad5jGchEMpHJP6TJ1KWpg",
+      agentId: "_3TEU5SdvhA2l5qeuAgZpYbqG4s",
       conversationId: conversationId.value,
       messageId: crypto.randomUUID(),
       content: action.label,
@@ -505,7 +505,7 @@ const handleSuggestedAction = (action) => {
 const handleRetry = (message) => {
   if (window.pendo) {
     window.pendo.trackAgent("user_reaction", {
-      agentId: "8mDvSyad5jGchEMpHJP6TJ1KWpg",
+      agentId: "_3TEU5SdvhA2l5qeuAgZpYbqG4s",
       conversationId: conversationId.value,
       messageId: message.messageId,
       content: "retry"
@@ -516,7 +516,7 @@ const handleRetry = (message) => {
 const handleThumbsUp = (message) => {
   if (window.pendo) {
     window.pendo.trackAgent("user_reaction", {
-      agentId: "8mDvSyad5jGchEMpHJP6TJ1KWpg",
+      agentId: "_3TEU5SdvhA2l5qeuAgZpYbqG4s",
       conversationId: conversationId.value,
       messageId: message.messageId,
       content: "positive"
@@ -527,7 +527,7 @@ const handleThumbsUp = (message) => {
 const handleThumbsDown = (message) => {
   if (window.pendo) {
     window.pendo.trackAgent("user_reaction", {
-      agentId: "8mDvSyad5jGchEMpHJP6TJ1KWpg",
+      agentId: "_3TEU5SdvhA2l5qeuAgZpYbqG4s",
       conversationId: conversationId.value,
       messageId: message.messageId,
       content: "negative"
