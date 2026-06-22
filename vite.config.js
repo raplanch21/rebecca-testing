@@ -4,11 +4,9 @@ import react from '@vitejs/plugin-react'
 import path from 'path'
 
 const componentsPath = path.resolve(__dirname, '../components/src')
-const repoName = 'rebecca-testing'
-const isGitHubActions = process.env.GITHUB_ACTIONS === 'true'
 
 export default defineConfig({
-  base: isGitHubActions ? `/${repoName}/` : '/',
+  base: './',
   plugins: [vue(), react()],
   resolve: {
     alias: {
