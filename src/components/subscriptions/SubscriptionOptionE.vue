@@ -937,6 +937,13 @@ function handleDuplicate (sub) {
   }
   subscriptions.push(clone)
   saveDigestsToStorage()
+
+  pendo.track('digest_duplicated', {
+    source_digest_id: sub.id,
+    new_digest_id: clone.id,
+    source_digest_name: sub.name,
+    sub_option_variant: 'E'
+  })
 }
 
 function closeBlade () {
@@ -1005,8 +1012,25 @@ async function handleSubscribe () {
     })
     if (!response.ok) throw new Error(`Webhook failed: ${response.status}`)
     console.log('Webhook sent successfully')
+    pendo.track('subscription_webhook_sent', {
+      dashboard_name: DASHBOARD_NAME,
+      digest_name: form.name,
+      frequency: form.frequency,
+      day: form.day,
+      time: form.time,
+      timezone: form.timezone,
+      destination: form.destination,
+      channel_count: form.channels.length,
+      webhook_success: true
+    })
   } catch (err) {
     console.error('Webhook error:', err)
+    pendo.track('subscription_webhook_sent', {
+      dashboard_name: DASHBOARD_NAME,
+      digest_name: form.name,
+      frequency: form.frequency,
+      webhook_success: false
+    })
   } finally {
     isSubscribing.value = false
   }
@@ -1016,6 +1040,21 @@ async function handleSubscribe () {
   saveDigestsToStorage()
   lastDigestUrl.value = digestUrl
   view.value = 'confirmation'
+
+  pendo.track('digest_created', {
+    digest_id: newSub.id,
+    segment: form.segment,
+    detail_level: form.detailLevel,
+    frequency: form.frequency,
+    day: form.day,
+    time: form.time,
+    timezone: form.timezone,
+    destination: form.destination,
+    channel_count: form.channels.length,
+    widget_count: form.selectedWidgets.length,
+    has_goal_description: !!form.goalDescription,
+    sub_option_variant: 'E'
+  })
 }
 
 function openPreferences () {
@@ -1066,6 +1105,20 @@ function savePreferences () {
       Object.assign(subscriptions[idx], JSON.parse(JSON.stringify(form)), { lastModifiedAt: Date.now() })
       saveDigestsToStorage()
       lastDigestUrl.value = buildDigestUrl(subscriptions[idx])
+
+      pendo.track('digest_updated', {
+        digest_id: editingId.value,
+        segment: form.segment,
+        detail_level: form.detailLevel,
+        frequency: form.frequency,
+        day: form.day,
+        time: form.time,
+        timezone: form.timezone,
+        destination: form.destination,
+        channel_count: form.channels.length,
+        widget_count: form.selectedWidgets.length,
+        sub_option_variant: 'E'
+      })
     }
   }
   view.value = 'list'
@@ -1075,8 +1128,16 @@ function deleteSub (id) {
   openMenuId.value = null
   const idx = subscriptions.findIndex(s => s.id === id)
   if (idx > -1) {
+    const sub = subscriptions[idx]
     subscriptions.splice(idx, 1)
     saveDigestsToStorage()
+
+    pendo.track('digest_deleted', {
+      digest_id: id,
+      digest_name: sub.name,
+      digest_status: sub.status,
+      sub_option_variant: 'E'
+    })
   }
 }
 </script>

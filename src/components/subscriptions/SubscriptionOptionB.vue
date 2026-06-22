@@ -347,7 +347,15 @@ function toggleWidget (id) {
 }
 
 function toggleStatus (sub) {
+  const previousStatus = sub.status
   sub.status = sub.status === 'active' ? 'paused' : 'active'
+
+  pendo.track('digest_status_toggled', {
+    digest_id: sub.id,
+    new_status: sub.status,
+    previous_status: previousStatus,
+    sub_option_variant: 'B'
+  })
 }
 
 function saveWizard () {

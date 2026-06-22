@@ -180,8 +180,14 @@ const close = () => {
 }
 
 const startNewConversation = () => {
+  const previousMessageCount = messages.value.length
   messages.value = []
   inputMessage.value = ''
+
+  pendo.track('agent_conversation_started', {
+    previous_message_count: previousMessageCount,
+    agent_title: props.title
+  })
 }
 
 const togglePin = () => {
@@ -195,9 +201,11 @@ const toggleMaximize = () => {
 const sendMessage = () => {
   if (!inputMessage.value.trim()) return
   
+  const messageContent = inputMessage.value
+
   messages.value.push({
     type: 'user',
-    content: inputMessage.value,
+    content: messageContent,
     timestamp: new Date().toLocaleString('en-US', { 
       month: 'long', 
       day: 'numeric', 
@@ -209,6 +217,15 @@ const sendMessage = () => {
   })
   
   inputMessage.value = ''
+
+  const userMsgCount = messages.value.filter(m => m.type === 'user').length
+  pendo.track('agent_message_sent', {
+    message_length: messageContent.length,
+    message_count: userMsgCount,
+    agent_title: props.title,
+    has_initial_context: !!props.initialContext,
+    is_first_message: userMsgCount === 1
+  })
   
   // Scroll to bottom
   nextTick(() => {
@@ -324,6 +341,14 @@ watch(() => props.isOpen, (isOpen) => {
           actionsLabel: response.actionsLabel,
           actions: response.actions
         }
+
+        pendo.track('agent_insight_response_generated', {
+          insight_title: props.title,
+          response_type: response.renderComponent ? 'component' : 'text',
+          has_suggested_actions: !!(response.actions && response.actions.length > 0),
+          suggested_action_count: response.actions ? response.actions.length : 0,
+          render_component: response.renderComponent || 'none'
+        })
       }, 1500)
     }
   }
@@ -462,6 +487,12 @@ const generateInsightResponse = (insight, title) => {
 const handleSuggestedAction = (action) => {
   // Handle suggested action clicks
   console.log('Action clicked:', action)
+
+  pendo.track('agent_suggested_action_clicked', {
+    action_label: action.label,
+    action_type: action.action,
+    agent_title: props.title
+  })
 }
 </script>
 

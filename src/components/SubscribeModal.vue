@@ -456,6 +456,13 @@ const handleFileSelect = (event) => {
   // Add file name to attachments if not already present
   if (!formData.value.attachments.includes(file.name)) {
     formData.value.attachments.push(file.name)
+
+    pendo.track('digest_attachment_uploaded', {
+      file_name: file.name,
+      file_type: file.name.split('.').pop() || 'unknown',
+      attachment_count: formData.value.attachments.length,
+      dashboard_name: props.dashboardName
+    })
   }
 
   // Reset input to allow selecting the same file again
@@ -493,6 +500,14 @@ const handleBack = () => {
 }
 
 const toggleEditMode = () => {
+  if (isEditMode.value) {
+    // Exiting edit mode — track the edit
+    pendo.track('digest_context_edited', {
+      description_length: formData.value.aiDescription.length,
+      was_modified: formData.value.aiDescription !== originalAiDescription.value,
+      dashboard_name: props.dashboardName
+    })
+  }
   isEditMode.value = !isEditMode.value
 }
 
