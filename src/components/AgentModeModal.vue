@@ -92,13 +92,13 @@
               <button class="agent-modal__message-action" title="Copy">
                 <PendoIcon type="copy" :size="16" />
               </button>
-              <button class="agent-modal__message-action" title="Refresh" @click="handleRetry(message)">
+              <button class="agent-modal__message-action" title="Refresh" @click="handleReaction(message, 'retry')">
                 <PendoIcon type="refresh-cw" :size="16" />
               </button>
-              <button class="agent-modal__message-action" title="Thumbs up" @click="handleThumbsUp(message)">
+              <button class="agent-modal__message-action" title="Thumbs up" @click="handleReaction(message, 'positive')">
                 <PendoIcon type="thumbs-up" :size="16" />
               </button>
-              <button class="agent-modal__message-action" title="Thumbs down" @click="handleThumbsDown(message)">
+              <button class="agent-modal__message-action" title="Thumbs down" @click="handleReaction(message, 'negative')">
                 <PendoIcon type="thumbs-down" :size="16" />
               </button>
             </div>
@@ -198,12 +198,12 @@ const sendMessage = () => {
   if (!inputMessage.value.trim()) return
   
   const messageId = crypto.randomUUID()
-  const content = inputMessage.value
+  const userContent = inputMessage.value
   
   messages.value.push({
     type: 'user',
-    content,
-    messageId,
+    content: userContent,
+    id: messageId,
     timestamp: new Date().toLocaleString('en-US', { 
       month: 'long', 
       day: 'numeric', 
@@ -214,12 +214,12 @@ const sendMessage = () => {
     })
   })
   
-  if (window.pendo) {
+  if (typeof window !== 'undefined' && window.pendo) {
     window.pendo.trackAgent("prompt", {
-      agentId: "_3TEU5SdvhA2l5qeuAgZpYbqG4s",
+      agentId: "QMeYgA_nzUynOwgAtuEwsH1FVmk",
       conversationId: conversationId.value,
-      messageId,
-      content,
+      messageId: messageId,
+      content: userContent,
       suggestedPrompt: false
     })
   }
@@ -297,8 +297,10 @@ const stopDrag = () => {
 
 // Initialize with context if provided
 watch(() => props.isOpen, (isOpen) => {
-  if (isOpen && props.initialContext) {
+  if (isOpen) {
     conversationId.value = crypto.randomUUID()
+  }
+  if (isOpen && props.initialContext) {
     const timestamp = new Date().toLocaleString('en-US', { 
       month: 'long', 
       day: 'numeric', 
@@ -335,7 +337,7 @@ watch(() => props.isOpen, (isOpen) => {
         messages.value[0] = {
           type: 'agent',
           content: response.content || '',
-          messageId: responseMessageId,
+          id: responseMessageId,
           timestamp: timestamp,
           isLoading: false,
           reasoning: false,
@@ -344,9 +346,9 @@ watch(() => props.isOpen, (isOpen) => {
           actions: response.actions
         }
         
-        if (window.pendo) {
+        if (typeof window !== 'undefined' && window.pendo) {
           window.pendo.trackAgent("agent_response", {
-            agentId: "_3TEU5SdvhA2l5qeuAgZpYbqG4s",
+            agentId: "QMeYgA_nzUynOwgAtuEwsH1FVmk",
             conversationId: conversationId.value,
             messageId: responseMessageId,
             content: response.content || ''
@@ -487,52 +489,20 @@ const generateInsightResponse = (insight, title) => {
   }
 }
 
+const handleReaction = (message, reactionType) => {
+  if (typeof window !== 'undefined' && window.pendo) {
+    window.pendo.trackAgent("user_reaction", {
+      agentId: "QMeYgA_nzUynOwgAtuEwsH1FVmk",
+      conversationId: conversationId.value,
+      messageId: message.id,
+      content: reactionType
+    })
+  }
+}
+
 const handleSuggestedAction = (action) => {
   // Handle suggested action clicks
   console.log('Action clicked:', action)
-  
-  if (window.pendo) {
-    window.pendo.trackAgent("prompt", {
-      agentId: "_3TEU5SdvhA2l5qeuAgZpYbqG4s",
-      conversationId: conversationId.value,
-      messageId: crypto.randomUUID(),
-      content: action.label,
-      suggestedPrompt: true
-    })
-  }
-}
-
-const handleRetry = (message) => {
-  if (window.pendo) {
-    window.pendo.trackAgent("user_reaction", {
-      agentId: "_3TEU5SdvhA2l5qeuAgZpYbqG4s",
-      conversationId: conversationId.value,
-      messageId: message.messageId,
-      content: "retry"
-    })
-  }
-}
-
-const handleThumbsUp = (message) => {
-  if (window.pendo) {
-    window.pendo.trackAgent("user_reaction", {
-      agentId: "_3TEU5SdvhA2l5qeuAgZpYbqG4s",
-      conversationId: conversationId.value,
-      messageId: message.messageId,
-      content: "positive"
-    })
-  }
-}
-
-const handleThumbsDown = (message) => {
-  if (window.pendo) {
-    window.pendo.trackAgent("user_reaction", {
-      agentId: "_3TEU5SdvhA2l5qeuAgZpYbqG4s",
-      conversationId: conversationId.value,
-      messageId: message.messageId,
-      content: "negative"
-    })
-  }
 }
 </script>
 
