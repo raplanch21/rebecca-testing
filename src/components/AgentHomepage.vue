@@ -7,13 +7,6 @@ function handleAskLeo(payload) {
   const promptText = typeof payload?.text === 'string' ? payload.text.trim() : ''
   const context = promptText || 'User interacted with Ask Leo from Agent homepage signals.'
 
-  if (typeof pendo !== 'undefined') {
-    pendo.track('agent_mode_opened_from_homepage', {
-      signalText: promptText ? promptText.substring(0, 100) : '',
-      sourceContext: 'agent_homepage_signals'
-    })
-  }
-
   emit('open-global-agent-mode', {
     title: 'Ask Leo',
     context

@@ -937,14 +937,6 @@ function handleDuplicate (sub) {
   }
   subscriptions.push(clone)
   saveDigestsToStorage()
-
-  if (typeof pendo !== 'undefined') {
-    pendo.track('digest_subscription_duplicated', {
-      originalSubscriptionId: sub.id,
-      originalName: sub.name,
-      newSubscriptionId: clone.id
-    })
-  }
 }
 
 function closeBlade () {
@@ -1024,22 +1016,6 @@ async function handleSubscribe () {
   saveDigestsToStorage()
   lastDigestUrl.value = digestUrl
   view.value = 'confirmation'
-
-  if (typeof pendo !== 'undefined') {
-    pendo.track('digest_subscription_created', {
-      digestName: form.name,
-      frequency: form.frequency,
-      day: form.day,
-      time: form.time,
-      timezone: form.timezone,
-      destination: form.destination,
-      channelCount: form.channels.length,
-      selectedWidgetCount: form.selectedWidgets.length,
-      segment: form.segment,
-      detailLevel: form.detailLevel,
-      goalDescription: form.goalDescription ? form.goalDescription.substring(0, 100) : ''
-    })
-  }
 }
 
 function openPreferences () {
@@ -1090,20 +1066,6 @@ function savePreferences () {
       Object.assign(subscriptions[idx], JSON.parse(JSON.stringify(form)), { lastModifiedAt: Date.now() })
       saveDigestsToStorage()
       lastDigestUrl.value = buildDigestUrl(subscriptions[idx])
-
-      if (typeof pendo !== 'undefined') {
-        pendo.track('digest_subscription_updated', {
-          subscriptionId: editingId.value,
-          frequency: form.frequency,
-          day: form.day,
-          time: form.time,
-          timezone: form.timezone,
-          channelCount: form.channels.length,
-          selectedWidgetCount: form.selectedWidgets.length,
-          segment: form.segment,
-          detailLevel: form.detailLevel
-        })
-      }
     }
   }
   view.value = 'list'
@@ -1115,12 +1077,6 @@ function deleteSub (id) {
   if (idx > -1) {
     subscriptions.splice(idx, 1)
     saveDigestsToStorage()
-
-    if (typeof pendo !== 'undefined') {
-      pendo.track('digest_subscription_deleted', {
-        subscriptionId: id
-      })
-    }
   }
 }
 </script>

@@ -469,7 +469,7 @@
           <PendoButton
             type="primary"
             label="Save"
-            @click="handleSaveClick"
+            @click="$emit('save', { widgets: dashboardWidgets, context: contextFields, schedule: formData })"
           />
         </div>
       </div>
@@ -508,7 +508,7 @@ const props = defineProps({
   }
 })
 
-const emit = defineEmits(['close', 'save'])
+defineEmits(['close', 'save'])
 
 const modeToTab = { customize: 'context', notifications: 'scheduling', share: 'share' }
 const activeTab = ref(modeToTab[props.mode] || 'context')
@@ -700,28 +700,6 @@ const subscriptionTypeOptions = [
   { value: 'Teams', label: 'Teams', icon: 'teams' },
   { value: 'Email', label: 'Email' }
 ]
-
-// --- Save handler ---
-
-const handleSaveClick = () => {
-  const selectedWidgets = dashboardWidgets.filter(w => w.selected)
-
-  if (typeof pendo !== 'undefined') {
-    pendo.track('agent_configuration_saved', {
-      selectedWidgetCount: selectedWidgets.length,
-      hasGoalDescription: !!contextFields.goal,
-      hasStakeholderQuestions: !!contextFields.stakeholderQuestions,
-      frequency: formData.frequency,
-      day: formData.day,
-      time: formData.time,
-      timezone: formData.timezone,
-      channelCount: formData.channels.length,
-      subscriptionName: formData.name
-    })
-  }
-
-  emit('save', { widgets: dashboardWidgets, context: contextFields, schedule: formData })
-}
 
 // --- Click-outside handler ---
 

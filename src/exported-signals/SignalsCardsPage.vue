@@ -3,18 +3,6 @@ import { ref } from 'vue'
 import { figmaStateCards } from './signalsData.js'
 
 const emit = defineEmits(['ask-leo'])
-
-function handleAskLeo(card) {
-  if (typeof pendo !== 'undefined') {
-    pendo.track('signal_ask_leo_initiated', {
-      signalId: card.id,
-      signalTag: card.tag,
-      signalTagTone: card.tagTone,
-      signalPeriod: card.period
-    })
-  }
-  emit('ask-leo', card)
-}
 const openSignalStateId = ref('path-report')
 
 function toggleSignalState(signalId) {
@@ -90,7 +78,7 @@ function barWidth(width) {
               :class="{ 'figma-toolbar-chevron-up': openSignalStateId === card.id }"
             ><path d="m6 9 6 6 6-6" /></svg>
           </button>
-          <button class="figma-actions-btn" @click="handleAskLeo(card)">
+          <button class="figma-actions-btn" @click="emit('ask-leo', card)">
             Ask Leo
           </button>
         </div>

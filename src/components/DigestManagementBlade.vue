@@ -531,14 +531,6 @@ function handleDuplicate (digest) {
   const clone = { ...digest, id: `digest-${Date.now()}`, name: `${digest.name} (copy)` }
   localDigests.push(clone)
   emit('duplicate', clone)
-
-  if (typeof pendo !== 'undefined') {
-    pendo.track('digest_management_duplicated', {
-      originalDigestId: digest.id,
-      originalName: digest.name,
-      newDigestId: clone.id
-    })
-  }
 }
 
 function handleDelete (digest) {
@@ -546,13 +538,6 @@ function handleDelete (digest) {
   const idx = localDigests.findIndex(d => d.id === digest.id)
   if (idx > -1) localDigests.splice(idx, 1)
   emit('delete', digest)
-
-  if (typeof pendo !== 'undefined') {
-    pendo.track('digest_management_deleted', {
-      digestId: digest.id,
-      digestName: digest.name
-    })
-  }
 }
 
 // ── Create flow ──
@@ -642,25 +627,6 @@ async function handleConfirm () {
     }
     localDigests.push(newDigest)
     emit('new', newDigest)
-  }
-
-  if (typeof pendo !== 'undefined') {
-    pendo.track('digest_management_created', {
-      digestName: fd.name,
-      dashboardName: props.dashboardName,
-      frequency: fd.frequency,
-      day: fd.day,
-      dayOfMonth: fd.dayOfMonth,
-      time: fd.time,
-      timezone: fd.timezone,
-      subscriptionType: fd.subscriptionType,
-      channelCount: fd.channels.length,
-      widgetCount: fd.widgets.length,
-      segment: fd.segment,
-      app: fd.app,
-      detailLevel: fd.detail,
-      contextDescription: contextDescription.value ? contextDescription.value.substring(0, 100) : ''
-    })
   }
 
   editingDigestId.value = null
