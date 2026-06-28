@@ -298,10 +298,10 @@
               </div>
               <div class="insights-home__highlight-footer">
                 <div class="insights-home__highlight-actions">
-                  <button class="insights-home__highlight-thumb" aria-label="Thumbs up">
+                  <button class="insights-home__highlight-thumb" aria-label="Thumbs up" @click="handleInsightFeedback('positive', 'Active users', 'up', 'Desktop App', 'Across your apps')">
                     <PendoIcon type="thumbs-up" :size="16" />
                   </button>
-                  <button class="insights-home__highlight-thumb" aria-label="Thumbs down">
+                  <button class="insights-home__highlight-thumb" aria-label="Thumbs down" @click="handleInsightFeedback('negative', 'Active users', 'up', 'Desktop App', 'Across your apps')">
                     <PendoIcon type="thumbs-down" :size="16" />
                   </button>
                 </div>
@@ -330,10 +330,10 @@
               </div>
               <div class="insights-home__highlight-footer">
                 <div class="insights-home__highlight-actions">
-                  <button class="insights-home__highlight-thumb" aria-label="Thumbs up">
+                  <button class="insights-home__highlight-thumb" aria-label="Thumbs up" @click="handleInsightFeedback('positive', 'Session duration', 'down', 'Mobile App', 'Across your apps')">
                     <PendoIcon type="thumbs-up" :size="16" />
                   </button>
-                  <button class="insights-home__highlight-thumb" aria-label="Thumbs down">
+                  <button class="insights-home__highlight-thumb" aria-label="Thumbs down" @click="handleInsightFeedback('negative', 'Session duration', 'down', 'Mobile App', 'Across your apps')">
                     <PendoIcon type="thumbs-down" :size="16" />
                   </button>
                 </div>
@@ -360,10 +360,10 @@
               </div>
               <div class="insights-home__highlight-footer">
                 <div class="insights-home__highlight-actions">
-                  <button class="insights-home__highlight-thumb" aria-label="Thumbs up">
+                  <button class="insights-home__highlight-thumb" aria-label="Thumbs up" @click="handleInsightFeedback('positive', 'Retention rate', 'up', 'Browser Extension', 'Across your apps')">
                     <PendoIcon type="thumbs-up" :size="16" />
                   </button>
-                  <button class="insights-home__highlight-thumb" aria-label="Thumbs down">
+                  <button class="insights-home__highlight-thumb" aria-label="Thumbs down" @click="handleInsightFeedback('negative', 'Retention rate', 'up', 'Browser Extension', 'Across your apps')">
                     <PendoIcon type="thumbs-down" :size="16" />
                   </button>
                 </div>
@@ -392,10 +392,10 @@
               </div>
               <div class="insights-home__highlight-footer">
                 <div class="insights-home__highlight-actions">
-                  <button class="insights-home__highlight-thumb" aria-label="Thumbs up">
+                  <button class="insights-home__highlight-thumb" aria-label="Thumbs up" @click="handleInsightFeedback('positive', 'Conversion rate', 'up', 'Desktop App', 'Across your apps')">
                     <PendoIcon type="thumbs-up" :size="16" />
                   </button>
-                  <button class="insights-home__highlight-thumb" aria-label="Thumbs down">
+                  <button class="insights-home__highlight-thumb" aria-label="Thumbs down" @click="handleInsightFeedback('negative', 'Conversion rate', 'up', 'Desktop App', 'Across your apps')">
                     <PendoIcon type="thumbs-down" :size="16" />
                   </button>
                 </div>
@@ -430,10 +430,10 @@
             </div>
             <div class="insights-home__highlight-footer">
               <div class="insights-home__highlight-actions">
-                <button class="insights-home__highlight-thumb" aria-label="Thumbs up">
+                <button class="insights-home__highlight-thumb" aria-label="Thumbs up" @click="handleInsightFeedback('positive', 'Dashboard views', 'up', 'Analytics Dashboard', 'By your events')">
                   <PendoIcon type="thumbs-up" :size="16" />
                 </button>
-                <button class="insights-home__highlight-thumb" aria-label="Thumbs down">
+                <button class="insights-home__highlight-thumb" aria-label="Thumbs down" @click="handleInsightFeedback('negative', 'Dashboard views', 'up', 'Analytics Dashboard', 'By your events')">
                   <PendoIcon type="thumbs-down" :size="16" />
                 </button>
               </div>
@@ -462,10 +462,10 @@
             </div>
             <div class="insights-home__highlight-footer">
               <div class="insights-home__highlight-actions">
-                <button class="insights-home__highlight-thumb" aria-label="Thumbs up">
+                <button class="insights-home__highlight-thumb" aria-label="Thumbs up" @click="handleInsightFeedback('positive', 'Guide completion', 'down', 'Getting Started', 'By your events')">
                   <PendoIcon type="thumbs-up" :size="16" />
                 </button>
-                <button class="insights-home__highlight-thumb" aria-label="Thumbs down">
+                <button class="insights-home__highlight-thumb" aria-label="Thumbs down" @click="handleInsightFeedback('negative', 'Guide completion', 'down', 'Getting Started', 'By your events')">
                   <PendoIcon type="thumbs-down" :size="16" />
                 </button>
               </div>
@@ -494,10 +494,10 @@
             </div>
             <div class="insights-home__highlight-footer">
               <div class="insights-home__highlight-actions">
-                <button class="insights-home__highlight-thumb" aria-label="Thumbs up">
+                <button class="insights-home__highlight-thumb" aria-label="Thumbs up" @click="handleInsightFeedback('positive', 'Feature adoption', 'up', 'Dark Mode', 'By your events')">
                   <PendoIcon type="thumbs-up" :size="16" />
                 </button>
-                <button class="insights-home__highlight-thumb" aria-label="Thumbs down">
+                <button class="insights-home__highlight-thumb" aria-label="Thumbs down" @click="handleInsightFeedback('negative', 'Feature adoption', 'up', 'Dark Mode', 'By your events')">
                   <PendoIcon type="thumbs-down" :size="16" />
                 </button>
               </div>
@@ -526,10 +526,10 @@
             </div>
             <div class="insights-home__highlight-footer">
               <div class="insights-home__highlight-actions">
-                <button class="insights-home__highlight-thumb" aria-label="Thumbs up">
+                <button class="insights-home__highlight-thumb" aria-label="Thumbs up" @click="handleInsightFeedback('positive', 'Performance', 'up', 'Settings page', 'By your events')">
                   <PendoIcon type="thumbs-up" :size="16" />
                 </button>
-                <button class="insights-home__highlight-thumb" aria-label="Thumbs down">
+                <button class="insights-home__highlight-thumb" aria-label="Thumbs down" @click="handleInsightFeedback('negative', 'Performance', 'up', 'Settings page', 'By your events')">
                   <PendoIcon type="thumbs-down" :size="16" />
                 </button>
               </div>
@@ -575,6 +575,18 @@ const emit = defineEmits(['open-global-agent-mode', 'close-global-agent-mode'])
 
 const handleOpenAgentMode = (data) => {
   emit('open-global-agent-mode', data)
+}
+
+const handleInsightFeedback = (feedbackType, category, trend, app, section) => {
+  if (typeof pendo !== 'undefined') {
+    pendo.track('insight_feedback_submitted', {
+      feedbackType,
+      insightCategory: category,
+      insightTrend: trend,
+      insightApp: app,
+      sectionName: section
+    })
+  }
 }
 
 const activeTab = ref('insights')

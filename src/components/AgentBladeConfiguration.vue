@@ -274,6 +274,7 @@
                   suffix-icon="send"
                   size="small"
                   :disabled="!formData.testChannel"
+                  @click="handleShareTest"
                 />
               </div>
             </div>
@@ -469,7 +470,7 @@
           <PendoButton
             type="primary"
             label="Save"
-            @click="$emit('save', { widgets: dashboardWidgets, context: contextFields, schedule: formData })"
+            @click="handleSave"
           />
         </div>
       </div>
@@ -508,7 +509,7 @@ const props = defineProps({
   }
 })
 
-defineEmits(['close', 'save'])
+const emit = defineEmits(['close', 'save'])
 
 const modeToTab = { customize: 'context', notifications: 'scheduling', share: 'share' }
 const activeTab = ref(modeToTab[props.mode] || 'context')
@@ -700,6 +701,39 @@ const subscriptionTypeOptions = [
   { value: 'Teams', label: 'Teams', icon: 'teams' },
   { value: 'Email', label: 'Email' }
 ]
+
+// --- Save handler ---
+
+const handleSave = () => {
+  if (typeof pendo !== 'undefined') {
+    const selectedWidgets = dashboardWidgets.filter(w => w.selected)
+    pendo.track('agent_configuration_saved', {
+      selectedWidgetCount: selectedWidgets.length,
+      selectedWidgetNames: selectedWidgets.map(w => w.name).join(', '),
+      hasGoalDescription: contextFields.goal.length > 0,
+      hasStakeholderQuestions: contextFields.stakeholderQuestions.length > 0,
+      frequency: formData.frequency,
+      subscriptionType: formData.subscriptionType,
+      channelCount: formData.channels.length,
+      channels: formData.channels.join(', '),
+      dashboardName: props.dashboardName
+    })
+  }
+  emit('save', { widgets: dashboardWidgets, context: contextFields, schedule: formData })
+}
+
+const handleShareTest = () => {
+  if (typeof pendo !== 'undefined') {
+    pendo.track('signal_insight_shared', {
+      subscriptionType: formData.subscriptionType,
+      channelCount: formData.channels.length,
+      channels: formData.channels.join(', '),
+      hasCommentary: shareCommentary.value.length > 0,
+      commentaryLength: shareCommentary.value.length,
+      hasInsightMessage: !!props.insightMessage
+    })
+  }
+}
 
 // --- Click-outside handler ---
 

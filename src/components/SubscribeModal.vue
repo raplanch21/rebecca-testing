@@ -456,6 +456,14 @@ const handleFileSelect = (event) => {
   // Add file name to attachments if not already present
   if (!formData.value.attachments.includes(file.name)) {
     formData.value.attachments.push(file.name)
+    if (typeof pendo !== 'undefined') {
+      pendo.track('context_attachment_uploaded', {
+        fileName: file.name,
+        fileType: file.name.split('.').pop() || '',
+        attachmentCount: formData.value.attachments.length,
+        sourceComponent: 'SubscribeModal'
+      })
+    }
   }
 
   // Reset input to allow selecting the same file again
@@ -502,6 +510,20 @@ const undoChanges = () => {
 }
 
 const handleSave = async () => {
+  if (typeof pendo !== 'undefined') {
+    pendo.track('subscription_created_drawer', {
+      subscriptionType: formData.value.subscriptionType,
+      frequency: formData.value.frequency,
+      day: formData.value.day,
+      time: formData.value.time,
+      timezone: formData.value.timezone,
+      channelCount: formData.value.channels.length,
+      channels: formData.value.channels.join(', '),
+      dashboardName: props.dashboardName,
+      attachmentCount: formData.value.attachments.length,
+      hasCustomDescription: formData.value.aiDescription !== originalAiDescription.value
+    })
+  }
   // Send confirmation to Slack via n8n webhook
   try {
     const webhookUrl = 'https://pendoio.app.n8n.cloud/webhook/dashboard-subscribe'
