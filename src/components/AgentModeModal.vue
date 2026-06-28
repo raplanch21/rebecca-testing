@@ -92,13 +92,13 @@
               <button class="agent-modal__message-action" title="Copy">
                 <PendoIcon type="copy" :size="16" />
               </button>
-              <button class="agent-modal__message-action" title="Refresh">
+              <button class="agent-modal__message-action" title="Refresh" @click="handleReaction(message, 'retry')">
                 <PendoIcon type="refresh-cw" :size="16" />
               </button>
-              <button class="agent-modal__message-action" title="Thumbs up">
+              <button class="agent-modal__message-action" title="Thumbs up" @click="handleReaction(message, 'positive')">
                 <PendoIcon type="thumbs-up" :size="16" />
               </button>
-              <button class="agent-modal__message-action" title="Thumbs down">
+              <button class="agent-modal__message-action" title="Thumbs down" @click="handleReaction(message, 'negative')">
                 <PendoIcon type="thumbs-down" :size="16" />
               </button>
             </div>
@@ -161,6 +161,7 @@ const props = defineProps({
 const emit = defineEmits(['close', 'update:isOpen'])
 
 const messages = ref([])
+const conversationId = ref(crypto.randomUUID())
 
 const inputMessage = ref('')
 const isPinned = ref(false)
@@ -182,6 +183,7 @@ const close = () => {
 const startNewConversation = () => {
   messages.value = []
   inputMessage.value = ''
+  conversationId.value = crypto.randomUUID()
 }
 
 const togglePin = () => {
@@ -195,9 +197,13 @@ const toggleMaximize = () => {
 const sendMessage = () => {
   if (!inputMessage.value.trim()) return
   
+  const messageId = crypto.randomUUID()
+  const userContent = inputMessage.value
+  
   messages.value.push({
     type: 'user',
-    content: inputMessage.value,
+    content: userContent,
+    id: messageId,
     timestamp: new Date().toLocaleString('en-US', { 
       month: 'long', 
       day: 'numeric', 
@@ -207,6 +213,16 @@ const sendMessage = () => {
       hour12: true 
     })
   })
+  
+  if (typeof window !== 'undefined' && window.pendo) {
+    window.pendo.trackAgent("prompt", {
+      agentId: "psUIE4B7RIlJ4QCp-ZO4CisuaoU",
+      conversationId: conversationId.value,
+      messageId: messageId,
+      content: userContent,
+      suggestedPrompt: false
+    })
+  }
   
   inputMessage.value = ''
   
@@ -313,16 +329,27 @@ watch(() => props.isOpen, (isOpen) => {
       setTimeout(() => {
         // Generate contextual response based on the insight
         const response = generateInsightResponse(props.initialContext, props.title)
+        const responseMessageId = crypto.randomUUID()
         
         messages.value[0] = {
           type: 'agent',
           content: response.content || '',
+          id: responseMessageId,
           timestamp: timestamp,
           isLoading: false,
           reasoning: false,
           renderComponent: response.renderComponent,
           actionsLabel: response.actionsLabel,
           actions: response.actions
+        }
+        
+        if (typeof window !== 'undefined' && window.pendo) {
+          window.pendo.trackAgent("agent_response", {
+            agentId: "psUIE4B7RIlJ4QCp-ZO4CisuaoU",
+            conversationId: conversationId.value,
+            messageId: responseMessageId,
+            content: response.content || ''
+          })
         }
       }, 1500)
     }
@@ -460,8 +487,29 @@ const generateInsightResponse = (insight, title) => {
 }
 
 const handleSuggestedAction = (action) => {
+  const messageId = crypto.randomUUID()
+  if (typeof window !== 'undefined' && window.pendo) {
+    window.pendo.trackAgent("prompt", {
+      agentId: "psUIE4B7RIlJ4QCp-ZO4CisuaoU",
+      conversationId: conversationId.value,
+      messageId: messageId,
+      content: action.label,
+      suggestedPrompt: true
+    })
+  }
   // Handle suggested action clicks
   console.log('Action clicked:', action)
+}
+
+const handleReaction = (message, reaction) => {
+  if (typeof window !== 'undefined' && window.pendo) {
+    window.pendo.trackAgent("user_reaction", {
+      agentId: "psUIE4B7RIlJ4QCp-ZO4CisuaoU",
+      conversationId: conversationId.value,
+      messageId: message.id,
+      content: reaction
+    })
+  }
 }
 </script>
 
