@@ -542,6 +542,13 @@ const toggleChannel = (channel) => {
 // Context tab functions
 const toggleEditMode = () => {
   if (isEditMode.value) {
+    if (typeof pendo !== 'undefined' && contextDescription.value !== originalContextDescription.value) {
+      pendo.track('dashboard_context_edited', {
+        descriptionLength: contextDescription.value.length,
+        wasModified: true,
+        sourceComponent: 'BladeConfiguration'
+      })
+    }
     // Save changes when exiting edit mode
     originalContextDescription.value = contextDescription.value
   }
@@ -588,6 +595,21 @@ const resetForm = () => {
 }
 
 const handleConfirm = async () => {
+  if (typeof pendo !== 'undefined') {
+    pendo.track('subscription_created_blade', {
+      subscriptionType: formData.value.subscriptionType,
+      frequency: formData.value.frequency,
+      day: formData.value.day,
+      dayOfMonth: formData.value.dayOfMonth,
+      time: formData.value.time,
+      timezone: formData.value.timezone,
+      channelCount: formData.value.channels.length,
+      channels: formData.value.channels.join(', '),
+      dashboardName: props.dashboardName || 'Autonomous Insights',
+      hasContextDescription: contextDescription.value !== originalContextDescription.value,
+      contextAttachmentCount: contextAttachments.value.length
+    })
+  }
   // Send confirmation to Slack via n8n webhook
   try {
     const webhookUrl = 'https://pendoio.app.n8n.cloud/webhook/dashboard-subscribe'

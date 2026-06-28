@@ -89,7 +89,7 @@
               </div>
             </div>
             <div class="agent-modal__message-toolbar">
-              <button class="agent-modal__message-action" title="Copy">
+              <button class="agent-modal__message-action" title="Copy" @click="handleCopy(message, index)">
                 <PendoIcon type="copy" :size="16" />
               </button>
               <button class="agent-modal__message-action" title="Refresh" @click="handleReaction(message, 'retry')">
@@ -181,9 +181,16 @@ const close = () => {
 }
 
 const startNewConversation = () => {
+  const previousMessageCount = messages.value.length
   messages.value = []
   inputMessage.value = ''
   conversationId.value = crypto.randomUUID()
+  if (typeof pendo !== 'undefined') {
+    pendo.track('agent_mode_new_conversation', {
+      previousMessageCount,
+      agentModeTitle: props.title
+    })
+  }
 }
 
 const togglePin = () => {
@@ -213,6 +220,14 @@ const sendMessage = () => {
       hour12: true 
     })
   })
+  
+  if (typeof pendo !== 'undefined') {
+    pendo.track('agent_mode_message_sent', {
+      messageLength: userContent.length,
+      messageCount: messages.value.length,
+      agentModeTitle: props.title
+    })
+  }
   
   if (typeof window !== 'undefined' && window.pendo) {
     window.pendo.trackAgent("prompt", {
@@ -341,6 +356,16 @@ watch(() => props.isOpen, (isOpen) => {
           renderComponent: response.renderComponent,
           actionsLabel: response.actionsLabel,
           actions: response.actions
+        }
+        
+        if (typeof pendo !== 'undefined') {
+          pendo.track('agent_mode_response_generated', {
+            responseType: response.renderComponent || 'text',
+            hasActions: !!(response.actions && response.actions.length > 0),
+            actionCount: response.actions ? response.actions.length : 0,
+            renderComponent: response.renderComponent || '',
+            insightTitle: props.title
+          })
         }
         
         if (typeof window !== 'undefined' && window.pendo) {
@@ -488,6 +513,13 @@ const generateInsightResponse = (insight, title) => {
 
 const handleSuggestedAction = (action) => {
   const messageId = crypto.randomUUID()
+  if (typeof pendo !== 'undefined') {
+    pendo.track('agent_mode_suggested_action_clicked', {
+      actionLabel: action.label,
+      actionType: action.action || '',
+      agentModeTitle: props.title
+    })
+  }
   if (typeof window !== 'undefined' && window.pendo) {
     window.pendo.trackAgent("prompt", {
       agentId: "psUIE4B7RIlJ4QCp-ZO4CisuaoU",
@@ -501,7 +533,27 @@ const handleSuggestedAction = (action) => {
   console.log('Action clicked:', action)
 }
 
+const handleCopy = (message, index) => {
+  if (message.content) {
+    navigator.clipboard.writeText(message.content.replace(/<[^>]*>/g, ''))
+  }
+  if (typeof pendo !== 'undefined') {
+    pendo.track('agent_response_copied', {
+      agentModeTitle: props.title,
+      responseIndex: index,
+      hasActions: !!(message.actions && message.actions.length > 0)
+    })
+  }
+}
+
 const handleReaction = (message, reaction) => {
+  if ((reaction === 'positive' || reaction === 'negative') && typeof pendo !== 'undefined') {
+    pendo.track('agent_response_feedback_submitted', {
+      feedbackType: reaction,
+      agentModeTitle: props.title,
+      messageCount: messages.value.length
+    })
+  }
   if (typeof window !== 'undefined' && window.pendo) {
     window.pendo.trackAgent("user_reaction", {
       agentId: "psUIE4B7RIlJ4QCp-ZO4CisuaoU",

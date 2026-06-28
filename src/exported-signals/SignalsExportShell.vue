@@ -13,6 +13,12 @@ const quickSuggestions = [
 function submitPrompt() {
   const value = promptValue.value.trim()
   if (!value) return
+  if (typeof pendo !== 'undefined') {
+    pendo.track('leo_prompt_submitted', {
+      promptLength: value.length,
+      isQuickSuggestion: quickSuggestions.includes(value)
+    })
+  }
   emit('ask', value)
   promptValue.value = ''
 }

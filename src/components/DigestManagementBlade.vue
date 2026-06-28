@@ -530,6 +530,14 @@ function handleDuplicate (digest) {
   openMenuId.value = null
   const clone = { ...digest, id: `digest-${Date.now()}`, name: `${digest.name} (copy)` }
   localDigests.push(clone)
+  if (typeof pendo !== 'undefined') {
+    pendo.track('digest_duplicated', {
+      sourceDigestId: digest.id,
+      sourceDigestName: digest.name,
+      newDigestId: clone.id,
+      newDigestName: clone.name
+    })
+  }
   emit('duplicate', clone)
 }
 
@@ -537,6 +545,14 @@ function handleDelete (digest) {
   openMenuId.value = null
   const idx = localDigests.findIndex(d => d.id === digest.id)
   if (idx > -1) localDigests.splice(idx, 1)
+  if (typeof pendo !== 'undefined') {
+    pendo.track('digest_deleted', {
+      digestId: digest.id,
+      digestName: digest.name,
+      digestSchedule: digest.schedule,
+      digestActive: digest.active
+    })
+  }
   emit('delete', digest)
 }
 
@@ -615,6 +631,24 @@ async function handleConfirm () {
         schedule: scheduleLabel,
         config: storedConfig
       }
+      if (typeof pendo !== 'undefined') {
+        pendo.track('digest_updated', {
+          digestId: localDigests[idx].id,
+          digestName: localDigests[idx].name,
+          frequency: fd.frequency,
+          day: fd.day,
+          time: fd.time,
+          timezone: fd.timezone,
+          subscriptionType: fd.subscriptionType,
+          channelCount: fd.channels.length,
+          channels: fd.channels.join(', '),
+          widgetCount: fd.widgets.length,
+          segment: fd.segment || '',
+          app: fd.app || '',
+          detailLevel: fd.detail,
+          dashboardName: props.dashboardName
+        })
+      }
       emit('edit', localDigests[idx])
     }
   } else {
@@ -626,6 +660,24 @@ async function handleConfirm () {
       config: storedConfig
     }
     localDigests.push(newDigest)
+    if (typeof pendo !== 'undefined') {
+      pendo.track('digest_created', {
+        digestName: newDigest.name,
+        frequency: fd.frequency,
+        day: fd.day,
+        time: fd.time,
+        timezone: fd.timezone,
+        subscriptionType: fd.subscriptionType,
+        channelCount: fd.channels.length,
+        channels: fd.channels.join(', '),
+        widgetCount: fd.widgets.length,
+        segment: fd.segment || '',
+        app: fd.app || '',
+        detailLevel: fd.detail,
+        hasGoalDescription: contextDescription.value.length > 0,
+        dashboardName: props.dashboardName
+      })
+    }
     emit('new', newDigest)
   }
 

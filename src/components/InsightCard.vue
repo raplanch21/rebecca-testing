@@ -169,6 +169,13 @@ const toggleExpanded = () => {
 }
 
 const openAgentMode = () => {
+  if (typeof pendo !== 'undefined') {
+    pendo.track('agent_mode_opened_from_insight', {
+      insightTitle: props.title,
+      sourceCardType: 'InsightCard',
+      sourceVariant: props.ctaVariant
+    })
+  }
   // Emit event to open global Agent mode
   emit('open-agent-mode', { title: props.title, context: props.summary })
   // Auto-collapse the summary when opening Agent mode
