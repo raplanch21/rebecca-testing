@@ -6,7 +6,10 @@ import HighchartsVue from 'highcharts-vue'
 
 pendo.initialize({
   visitor: {
-    id: ''
+    id: 'test-visitor-001'
+  },
+  account: {
+    id: 'test-account-001'
   }
 });
 
