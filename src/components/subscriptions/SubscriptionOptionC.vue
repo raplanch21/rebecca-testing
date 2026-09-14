@@ -283,6 +283,22 @@ function saveDraft () {
     const idx = subscriptions.findIndex(s => s.id === selectedId.value)
     if (idx > -1) Object.assign(subscriptions[idx], JSON.parse(JSON.stringify(draft)))
   }
+  if (typeof pendo !== 'undefined') {
+    pendo.track('digest_saved', {
+      isNew: isNew.value,
+      digestName: draft.name,
+      frequency: draft.frequency,
+      day: draft.day,
+      time: draft.time,
+      timezone: draft.timezone,
+      destination: draft.destination,
+      channelCount: draft.channels.length,
+      selectedWidgetCount: draft.selectedWidgets.length,
+      segment: draft.segment,
+      detailLevel: draft.detailLevel,
+      status: draft.status
+    })
+  }
 }
 
 function revertDraft () {
@@ -300,6 +316,12 @@ function duplicateCurrent () {
   clone.id = `sub-${Date.now()}`
   clone.name = `${draft.name} (copy)`
   subscriptions.push(reactive(clone))
+  if (typeof pendo !== 'undefined') {
+    pendo.track('digest_duplicated', {
+      sourceDigestName: draft.name,
+      newDigestName: clone.name
+    })
+  }
   selectedId.value = clone.id
   Object.assign(draft, clone)
   isNew.value = false
@@ -307,7 +329,16 @@ function duplicateCurrent () {
 
 function deleteCurrent () {
   const idx = subscriptions.findIndex(s => s.id === selectedId.value)
-  if (idx > -1) subscriptions.splice(idx, 1)
+  if (idx > -1) {
+    const sub = subscriptions[idx]
+    if (typeof pendo !== 'undefined') {
+      pendo.track('digest_deleted', {
+        digestId: sub.id,
+        digestName: sub.name
+      })
+    }
+    subscriptions.splice(idx, 1)
+  }
   selectedId.value = null
   isNew.value = false
 }
