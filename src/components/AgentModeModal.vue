@@ -231,7 +231,7 @@ const sendMessage = () => {
   
   if (typeof window !== 'undefined' && window.pendo) {
     window.pendo.trackAgent("prompt", {
-      agentId: "psUIE4B7RIlJ4QCp-ZO4CisuaoU",
+      agentId: "LgqEC-DDDgagQLNRNUAx9e4yNks",
       conversationId: conversationId.value,
       messageId: messageId,
       content: userContent,
@@ -370,7 +370,7 @@ watch(() => props.isOpen, (isOpen) => {
         
         if (typeof window !== 'undefined' && window.pendo) {
           window.pendo.trackAgent("agent_response", {
-            agentId: "psUIE4B7RIlJ4QCp-ZO4CisuaoU",
+            agentId: "LgqEC-DDDgagQLNRNUAx9e4yNks",
             conversationId: conversationId.value,
             messageId: responseMessageId,
             content: response.content || ''
@@ -522,7 +522,7 @@ const handleSuggestedAction = (action) => {
   }
   if (typeof window !== 'undefined' && window.pendo) {
     window.pendo.trackAgent("prompt", {
-      agentId: "psUIE4B7RIlJ4QCp-ZO4CisuaoU",
+      agentId: "LgqEC-DDDgagQLNRNUAx9e4yNks",
       conversationId: conversationId.value,
       messageId: messageId,
       content: action.label,
@@ -556,7 +556,7 @@ const handleReaction = (message, reaction) => {
   }
   if (typeof window !== 'undefined' && window.pendo) {
     window.pendo.trackAgent("user_reaction", {
-      agentId: "psUIE4B7RIlJ4QCp-ZO4CisuaoU",
+      agentId: "LgqEC-DDDgagQLNRNUAx9e4yNks",
       conversationId: conversationId.value,
       messageId: message.id,
       content: reaction
