@@ -357,6 +357,21 @@ function saveWizard () {
   } else {
     subscriptions.push(reactive(JSON.parse(JSON.stringify(draft))))
   }
+  if (typeof pendo !== 'undefined') {
+    pendo.track('digest_saved', {
+      isEditing: isEditing.value,
+      digestName: draft.name,
+      frequency: draft.frequency,
+      day: draft.day,
+      time: draft.time,
+      timezone: draft.timezone,
+      destination: draft.destination,
+      channelCount: draft.channels.length,
+      selectedWidgetCount: draft.selectedWidgets.length,
+      segment: draft.segment,
+      detailLevel: draft.detailLevel
+    })
+  }
   closeWizard()
 }
 
@@ -365,11 +380,26 @@ function duplicateSub (sub) {
   clone.id = `sub-${Date.now()}`
   clone.name = `${sub.name} (copy)`
   subscriptions.push(reactive(clone))
+  if (typeof pendo !== 'undefined') {
+    pendo.track('digest_duplicated', {
+      sourceDigestName: sub.name,
+      newDigestName: clone.name
+    })
+  }
 }
 
 function deleteSub (id) {
   const idx = subscriptions.findIndex(s => s.id === id)
-  if (idx > -1) subscriptions.splice(idx, 1)
+  if (idx > -1) {
+    const sub = subscriptions[idx]
+    if (typeof pendo !== 'undefined') {
+      pendo.track('digest_deleted', {
+        digestId: sub.id,
+        digestName: sub.name
+      })
+    }
+    subscriptions.splice(idx, 1)
+  }
 }
 </script>
 

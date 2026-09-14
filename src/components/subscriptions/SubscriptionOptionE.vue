@@ -1075,6 +1075,13 @@ function deleteSub (id) {
   openMenuId.value = null
   const idx = subscriptions.findIndex(s => s.id === id)
   if (idx > -1) {
+    const sub = subscriptions[idx]
+    if (typeof pendo !== 'undefined') {
+      pendo.track('digest_deleted', {
+        digestId: sub.id,
+        digestName: sub.name
+      })
+    }
     subscriptions.splice(idx, 1)
     saveDigestsToStorage()
   }
