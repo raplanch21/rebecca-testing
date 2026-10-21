@@ -95,10 +95,22 @@
               <button class="agent-modal__message-action" title="Refresh" @click="handleReaction(message, 'retry')">
                 <PendoIcon type="refresh-cw" :size="16" />
               </button>
-              <button class="agent-modal__message-action" title="Thumbs up" @click="handleReaction(message, 'positive')">
+              <button
+                class="agent-modal__message-action"
+                title="Thumbs up"
+                @click="handleReaction(message, 'positive')"
+                :class="{ 'agent-modal__message-action--active': message.feedback === 'positive' }"
+                :aria-pressed="message.feedback === 'positive'"
+              >
                 <PendoIcon type="thumbs-up" :size="16" />
               </button>
-              <button class="agent-modal__message-action" title="Thumbs down" @click="handleReaction(message, 'negative')">
+              <button
+                class="agent-modal__message-action"
+                title="Thumbs down"
+                @click="handleReaction(message, 'negative')"
+                :class="{ 'agent-modal__message-action--active': message.feedback === 'negative' }"
+                :aria-pressed="message.feedback === 'negative'"
+              >
                 <PendoIcon type="thumbs-down" :size="16" />
               </button>
             </div>
@@ -547,6 +559,9 @@ const handleCopy = (message, index) => {
 }
 
 const handleReaction = (message, reaction) => {
+  if (reaction === 'positive' || reaction === 'negative') {
+    message.feedback = reaction
+  }
   if ((reaction === 'positive' || reaction === 'negative') && typeof pendo !== 'undefined') {
     pendo.track('agent_response_feedback_submitted', {
       feedbackType: reaction,
@@ -1157,6 +1172,12 @@ const handleReaction = (message, reaction) => {
 
 .agent-modal__message-action:hover {
   background-color: var(--gray-10, #F8F8F9);
+}
+
+.agent-modal__message-action--active,
+.agent-modal__message-action--active:hover {
+  background-color: var(--gray-30, #EAECF1);
+  color: var(--gray-90, #3A3C45);
 }
 
 /* Input Area */
