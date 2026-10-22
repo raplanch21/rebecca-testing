@@ -95,10 +95,10 @@
               <button class="agent-modal__message-action" title="Refresh" @click="handleReaction(message, 'retry')">
                 <PendoIcon type="refresh-cw" :size="16" />
               </button>
-              <button class="agent-modal__message-action" title="Thumbs up" @click="handleReaction(message, 'positive')">
+              <button class="agent-modal__message-action" :class="{ 'agent-modal__message-action--active': message.feedback === 'positive' }" title="Thumbs up" :aria-pressed="message.feedback === 'positive'" @click="handleReaction(message, 'positive')">
                 <PendoIcon type="thumbs-up" :size="16" />
               </button>
-              <button class="agent-modal__message-action" title="Thumbs down" @click="handleReaction(message, 'negative')">
+              <button class="agent-modal__message-action" :class="{ 'agent-modal__message-action--active': message.feedback === 'negative' }" title="Thumbs down" :aria-pressed="message.feedback === 'negative'" @click="handleReaction(message, 'negative')">
                 <PendoIcon type="thumbs-down" :size="16" />
               </button>
             </div>
@@ -547,6 +547,11 @@ const handleCopy = (message, index) => {
 }
 
 const handleReaction = (message, reaction) => {
+  if (reaction === 'positive' || reaction === 'negative') {
+    // One rating per answer: re-clicking the chosen thumb is a no-op, the other thumb replaces it
+    if (message.feedback === reaction) return
+    message.feedback = reaction
+  }
   if ((reaction === 'positive' || reaction === 'negative') && typeof pendo !== 'undefined') {
     pendo.track('agent_response_feedback_submitted', {
       feedbackType: reaction,
@@ -1157,6 +1162,15 @@ const handleReaction = (message, reaction) => {
 
 .agent-modal__message-action:hover {
   background-color: var(--gray-10, #F8F8F9);
+}
+
+.agent-modal__message-action--active {
+  background-color: var(--gray-30, #EAECF1);
+  color: var(--gray-110, #1A1C25);
+}
+
+.agent-modal__message-action--active:hover {
+  background-color: var(--gray-40, #DADCE5);
 }
 
 /* Input Area */
